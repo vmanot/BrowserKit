@@ -6,6 +6,12 @@ import Diagnostics
 import Swallow
 import WebKit
 
+/// BrowserKit's convenience wrapper over `turndown`.
+///
+/// turndown.js is a JavaScript library that converts HTML into Markdown.
+///
+/// References:
+/// - https://github.com/mixmark-io/turndown
 @MainActor
 public final class _TurndownJS {
     private let js = try! String(contentsOf: Bundle.module.url(forResource: "turndown", withExtension: "js")!)
@@ -16,14 +22,15 @@ public final class _TurndownJS {
         
     }
     
+    /// Converts the given HTML into Markdown.
     public func convert(
-        _ html: String
+        htmlString: String
     ) async throws -> String {
-        guard !html.isEmpty else {
-            return html
+        guard !htmlString.isEmpty else {
+            return htmlString
         }
         
-        let base64HtmlString = try html.data(using: .utf8, allowLossyConversion: false)
+        let base64HtmlString = try htmlString.data(using: .utf8, allowLossyConversion: false)
             .unwrap()
             .base64EncodedString()
         
