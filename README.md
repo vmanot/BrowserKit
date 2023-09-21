@@ -11,7 +11,7 @@ The main export of this package is `BKWebView`.
 
 ### [`turndown.js`](https://github.com/mixmark-io/turndown)
 
-Usage:
+turndown is an HTML to Markdown converter written in JavaScript. BrowserKit ships a minified version of `turndown.js` that makes it easy to scrape web pages using a modern Swift API: 
 ```swift
 let turndown = await _TurndownJS()
 
