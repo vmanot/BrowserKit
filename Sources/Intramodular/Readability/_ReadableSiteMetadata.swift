@@ -5,7 +5,7 @@
 import Foundation
 import Merge
 import Swallow
-import SwiftSoup
+@_implementationOnly import SwiftSoup
 import WebKit
 
 public struct _ReadableSiteMetadata: Equatable, Codable {    

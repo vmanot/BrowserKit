@@ -3,10 +3,10 @@
 //
 
 import Swallow
-import SwiftSoup
+@_implementationOnly import SwiftSoup
 
 extension SwiftSoup.Element {
-    public func firstChild(
+    func firstChild(
         tag: String? = nil,
         id: String? = nil
     ) -> Element? {
@@ -27,7 +27,7 @@ extension SwiftSoup.Element {
         }
     }
     
-    public func firstAttribute(
+    func firstAttribute(
         selector: String,
         attribute: String
     ) -> String? {
