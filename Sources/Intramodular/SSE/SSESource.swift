@@ -154,7 +154,9 @@ open class SSESource: NSObject, URLSessionDataDelegate {
 }
 
 extension SSESource {
-    func sessionConfiguration(lastEventId: String?) -> URLSessionConfiguration {
+    func sessionConfiguration(
+        lastEventId: String?
+    ) -> URLSessionConfiguration {
         var additionalHeaders = headers
         
         if let eventID = lastEventId {

@@ -5,12 +5,8 @@
 import Swallow
 
 final class SSEStreamParser {
-    
-    //  Events are separated by end of line. End of line can be:
-    //  \r = CR (Carriage Return) → Used as a new line character in Mac OS before X
-    //  \n = LF (Line Feed) → Used as a new line character in Unix/Mac OS X
-    //  \r\n = CR + LF → Used as a new line character in Windows
-    private let validNewlineCharacters = ["\r\n", "\n", "\r"]
+    // ["\r\n", "\n", "\r"]
+    private let validNewlineCharacters: [Character] = ["\n", "\r"]
     private let dataBuffer: NSMutableData
     
     init() {
@@ -71,8 +67,12 @@ final class SSEStreamParser {
     // This methods returns the range of the first delimiter found in the buffer. For example:
     // If in the buffer we have: `id: event-id-1\ndata:event-data-first\n\n`
     // This method will return the range for the `\n\n`.
-    private func searchFirstEventDelimiter(in range: NSRange) -> NSRange? {
-        let delimiters = validNewlineCharacters.map { "\($0)\($0)".data(using: String.Encoding.utf8)! }
+    private func searchFirstEventDelimiter(
+        in range: NSRange
+    ) -> NSRange? {
+        let delimiters = validNewlineCharacters.map {
+            "\($0)\($0)".data(using: String.Encoding.utf8)!
+        }
         
         for delimiter in delimiters {
             let foundRange = dataBuffer.range(
