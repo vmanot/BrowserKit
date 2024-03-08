@@ -3,7 +3,7 @@
 //
 
 import Swallow
-@_implementationOnly import SwiftSoup
+import SwiftSoup
 
 extension SwiftSoup.Element {
     func firstChild(
