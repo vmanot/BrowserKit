@@ -1,3 +1,7 @@
+# BrowserKit
+
+[![Build all  platforms](https://github.com/vmanot/BrowserKit/actions/workflows/swift.yml/badge.svg)](https://github.com/vmanot/BrowserKit/actions/workflows/swift.yml)
+
 # Requirements
 
 - Deployment target: iOS 16, macOS 13
