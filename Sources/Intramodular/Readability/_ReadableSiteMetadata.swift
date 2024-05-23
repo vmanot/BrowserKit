@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Merge
+internal import Merge
 import Swallow
 import SwiftSoup
 import WebKit

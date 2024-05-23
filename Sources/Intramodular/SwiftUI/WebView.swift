@@ -5,7 +5,8 @@
 #if os(iOS) || os(macOS) || os(visionOS)
 
 import Swift
-import SwiftUIX
+import SwiftUI
+private import SwiftUIX
 import WebKit
 
 public struct WebView: View {

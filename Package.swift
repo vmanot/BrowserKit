@@ -19,6 +19,7 @@ let package = Package(
         .package(url: "https://github.com/scinfu/SwiftSoup.git", exact: "2.6.0"),
         .package(url: "https://github.com/vmanot/NetworkKit.git", branch: "master"),
         .package(url: "https://github.com/vmanot/Swallow.git", branch: "master"),
+        .package(url: "https://github.com/vmanot/SwiftUIX.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -27,10 +28,14 @@ let package = Package(
                 "CorePersistence",
                 "NetworkKit",
                 "Swallow",
-                "SwiftSoup"
+                "SwiftSoup",
+                "SwiftUIX",
             ],
             path: "Sources",
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: [
+                .enableExperimentalFeature("AccessLevelOnImport")
+            ]
         ),
         .testTarget(
             name: "BrowserKitTests",

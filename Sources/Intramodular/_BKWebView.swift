@@ -2,7 +2,8 @@
 // Copyright (c) Vatsal Manot
 //
 
-import Merge
+import Combine
+internal import Merge
 import Swallow
 @preconcurrency import WebKit
 

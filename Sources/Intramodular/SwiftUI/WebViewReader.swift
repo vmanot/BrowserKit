@@ -5,7 +5,8 @@
 #if os(iOS) || os(macOS) || os(visionOS)
 
 import Swift
-import SwiftUIX
+import SwiftUI
+private import SwiftUIX
 import WebKit
 
 /// A view whose child is defined as a function of a `WebViewProxy` targeting the collection views within the child.
