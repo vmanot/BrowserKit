@@ -6,7 +6,7 @@
 
 import Swift
 import SwiftUI
-private import SwiftUIX
+internal import SwiftUIX
 import WebKit
 
 /// A view whose child is defined as a function of a `WebViewProxy` targeting the collection views within the child.

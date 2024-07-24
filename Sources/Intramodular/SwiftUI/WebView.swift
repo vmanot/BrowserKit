@@ -6,7 +6,7 @@
 
 import Swift
 import SwiftUI
-private import SwiftUIX
+internal import SwiftUIX
 import WebKit
 
 public struct WebView: View {

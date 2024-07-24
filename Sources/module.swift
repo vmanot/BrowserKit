@@ -4,5 +4,4 @@
 
 @_exported import FoundationX
 @_exported import Swallow
-@_exported import SwiftUI
 @_exported import WebKit
