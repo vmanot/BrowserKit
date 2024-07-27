@@ -4,7 +4,6 @@
 
 internal import Merge
 import Swallow
-import WebKit
 
 extension _BKWebView: WKNavigationDelegate {
     public func webView(

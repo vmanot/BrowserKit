@@ -5,7 +5,7 @@
 import Combine
 internal import Merge
 import Swallow
-@preconcurrency import WebKit
+import WebKit
 
 @MainActor
 open class _BKWebView: WKWebView {
@@ -18,7 +18,9 @@ open class _BKWebView: WKWebView {
     private var userScriptContinuations: [String: CheckedContinuation<Void, Error>] = [:]
     
     public var navigationEvents: AnyAsyncSequence<Result<WKNavigation.Success, Error>> {
-        .init(_navigationState.navigationEventsSubject.values)
+        get async {
+            AnyAsyncSequence(await _navigationState.navigationEventsSubject.values)
+        }
     }
     
     private let loggingScriptMessageHandler = LoggingScriptMessageHandler()
@@ -290,19 +292,24 @@ extension _BKWebView {
             _ navigation: WKNavigation?,
             with continuation: CheckedContinuation<WKNavigation.Success, Error>
         ) {
-            if let last = last {
-                resolve(last, with: .error(_Error.overriden))
+            Task {
+                if let last = last {
+                    await resolve(last, with: .error(_Error.overriden))
+                }
+                
+                self.last = navigation
+                self.continuations[navigation] = continuation
             }
-            
-            self.last = navigation
-            self.continuations[navigation] = continuation
         }
         
         func setLastResponse(_ response: WKNavigationResponse?) {
             self.lastResponse = response
         }
         
-        func resolve(_ navigation: WKNavigation?, with result: TaskResult<Void, Error>) {
+        func resolve(
+            _ navigation: WKNavigation?,
+            with result: TaskResult<Void, Error>
+        ) async {
             guard let navigation else {
                 return
             }
@@ -332,7 +339,7 @@ extension _BKWebView {
                 } else {
                     _ = try result.get()
                     
-                    navigationResult = .success(.init(urlResponse: try lastResponse.unwrap().response))
+                    navigationResult = await .success(.init(urlResponse: try lastResponse.unwrap().response))
                 }
             } catch {
                 navigationResult = .failure(error)
