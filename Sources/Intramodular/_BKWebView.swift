@@ -287,17 +287,19 @@ extension _BKWebView {
         
         private func createTask(for navigation: WKNavigation) -> Task<WKNavigation.Success, Error> {
             let task = Task(priority: .userInitiated) {
-                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<WKNavigation.Success, Error>) in
-                    Task.detached {
-                        await withTaskCancellationHandler {
+                try await withTaskCancellationHandler {
+                    try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<WKNavigation.Success, Error>) in
+                        Task.detached {
                             await self.begin(navigation, with: continuation)
-                        } onCancel: {
-                            Task {
-                                await self.resolve(navigation, with: .canceled)
-                            }
                         }
                     }
+                } onCancel: {
+                    Task {
+                        await self.resolve(navigation, with: .canceled)
+                    }
                 }
+
+                
             }
             
             tasks[navigation] = task
@@ -311,7 +313,11 @@ extension _BKWebView {
         ) {
             Task {
                 if let last = last {
-                    await resolve(last, with: .error(_Error.overriden))
+                    resolutions[last] = .wasOverridden(by: navigation)
+                    continuations[last]?.resume(throwing: _Error.overriden)
+                    continuations[last] = nil
+                    
+                    tasks[last]?.cancel()
                 }
                 
                 self.last = navigation
@@ -327,6 +333,7 @@ extension _BKWebView {
             _ navigation: WKNavigation?,
             with result: TaskResult<Void, Error>
         ) async {
+            
             guard let navigation else {
                 return
             }
