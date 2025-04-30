@@ -24,7 +24,7 @@ open class _BKWebView: WKWebView {
     }
     
     private let loggingScriptMessageHandler = LoggingScriptMessageHandler()
-    private let networkScriptMessageHandler = NetworkScriptMessageHandler()
+    let networkScriptMessageHandler = NetworkScriptMessageHandler()
     
     @MainActor
     init() {
@@ -241,57 +241,6 @@ extension _BKWebView {
         }.value
     }
     
-    public struct NetworkMessagePattern: Identifiable {
-        enum Payload {
-            case custom((NetworkMessage) throws -> Bool)
-        }
-        
-        let identifier: _AutoIncrementingIdentifier<Int> = _AutoIncrementingIdentifier()
-        let payload: Payload
-        
-        public var id: AnyHashable {
-            identifier
-        }
-        
-        private init(payload: Payload) {
-            self.payload = payload
-        }
-        
-        public init(predicate: @escaping (NetworkMessage) throws -> Bool) {
-            self.init(payload: .custom(predicate))
-        }
-        
-        public func matches(_ message: NetworkMessage) throws -> Bool {
-            switch payload {
-                case .custom(let predicate):
-                    return try predicate(message)
-            }
-        }
-        
-        public func callAsFunction(_ message: NetworkMessage) throws -> Bool {
-            try matches(message)
-        }
-    }
-    
-    public func firstNetworkMessage(
-        timeout: TimeInterval = 10,
-        where predicate: NetworkMessagePattern
-    ) async throws -> NetworkMessage {
-        let id = UUID()
-        
-        do {
-            return try await Task(timeout: timeout) { @MainActor in
-                return try await withCheckedThrowingContinuation { continuation in
-                    networkScriptMessageHandler.handlers[id] = ContinuationPredicateContainer(predicate: predicate, continuation: continuation)
-                }
-            }.value
-        } catch {
-            networkScriptMessageHandler.handlers[id]?.continuation.resume(throwing: error)
-            
-            throw error
-        }
-        
-    }
 }
 
 // MARK: - Auxiliary
@@ -486,3 +435,4 @@ extension WKHTTPCookieStore {
         }
     }
 }
+
