@@ -14,25 +14,18 @@ extension _BKWebView {
         ) {
             guard message.name == "network" else { return }
             
-            //print("🔵 Raw message.body:", message.body)
-            
             guard let dict = message.body as? [String: Any] else {
-                print("🟥 Could not cast message body to [String: Any]")
                 return
             }
             
-            do {
+            #try(.optimistic) {
                 let data = try JSONSerialization.data(withJSONObject: dict)
                 
                 let networkMessage = try JSONDecoder().decode(NetworkMessage.self, from: data)
                 
-                for handler in handlers {
-                    #try(.optimistic) {
-                        try handler(networkMessage)
-                    }
+                for handler in self.handlers {
+                    try handler(networkMessage)
                 }
-            } catch {
-                print("🟥 Failed to decode NetworkMessage:", error)
             }
         }
     }

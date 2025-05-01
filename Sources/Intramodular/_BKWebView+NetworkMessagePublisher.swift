@@ -46,6 +46,7 @@ extension _BKWebView {
     private final class NavigationEventSubscription<S: Subscriber>: NSObject, Subscription where S.Input == NetworkMessage, S.Failure == Never {
         private var id = UUID()
         private var downstream: S?
+        @MainActor
         private weak var messageHandler: _BKWebView.NetworkScriptMessageHandler?
         private let predicate: NetworkMessagePattern
         private var demand: Subscribers.Demand = .none
@@ -80,11 +81,17 @@ extension _BKWebView {
                 demand += additional
             }
             
-            messageHandler?.handlers.insert(handler)
+            Task.detached { @MainActor [weak self] in
+                self?.messageHandler?.handlers.insert(handler)
+            }
         }
         
         func cancel() {
-            messageHandler?.handlers.remove(elementIdentifiedBy: id)
+            Task.detached { @MainActor [weak self] in
+                guard let id = self?.id else { return }
+                self?.messageHandler?.handlers.remove(elementIdentifiedBy: id)
+            }
+            
             downstream = nil
         }
     }

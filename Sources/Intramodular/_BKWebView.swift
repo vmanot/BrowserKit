@@ -24,6 +24,7 @@ open class _BKWebView: WKWebView {
     }
     
     private let loggingScriptMessageHandler = LoggingScriptMessageHandler()
+    private let mutationObserverScriptMessageHandler = MutationObserverScriptMessageHandler()
     let networkScriptMessageHandler = NetworkScriptMessageHandler()
     
     @MainActor
@@ -35,10 +36,13 @@ open class _BKWebView: WKWebView {
         configuration.processPool = Self.ProcessPool.shared
         
         configuration.install(handler: loggingScriptMessageHandler)
+        configuration.install(handler: mutationObserverScriptMessageHandler)
         configuration.install(handler: networkScriptMessageHandler)
         
+        configuration.userContentController.removeAllScriptMessageHandlers()
         configuration.userContentController.add(networkScriptMessageHandler, name: "network")
         configuration.userContentController.add(loggingScriptMessageHandler, name: "logging")
+        configuration.userContentController.add(mutationObserverScriptMessageHandler, name: "observation")
         
         assert(configuration.processPool == Self.ProcessPool.shared)
         
@@ -244,6 +248,12 @@ extension _BKWebView {
 }
 
 // MARK: - Auxiliary
+
+extension _BKWebView {
+    public func htmlPublisher() -> AnyPublisher<String, Never> {
+        self.mutationObserverScriptMessageHandler.htmlSourceSubject.eraseToAnyPublisher()
+    }
+}
 
 extension _BKWebView {
     actor _NavigationState {
