@@ -116,7 +116,6 @@ open class _BKWebView: WKWebView {
         return navigation
     }
     
-    @MainActor
     func syncCookiesToSharedHTTPCookieStorage(webView: WKWebView) async {
         guard let url = url, let host = url.host else {
             return

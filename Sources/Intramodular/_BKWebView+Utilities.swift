@@ -14,7 +14,7 @@ extension _BKWebView {
     }
     
     public func type(_ text: String, selector: String, shouldSubmit: Bool = false) async throws {
-        try await self.callAsyncJavaScript(typeTextJS, arguments: ["selector": selector, "text": text, "shouldSubmit": shouldSubmit], contentWorld: .defaultClient)
+        _ = try await self.callAsyncJavaScript(typeTextJS, arguments: ["selector": selector, "text": text, "shouldSubmit": shouldSubmit], contentWorld: .defaultClient)
     }
 }
 

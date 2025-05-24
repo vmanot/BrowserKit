@@ -64,8 +64,8 @@ extension _BKWebView: WKNavigationDelegate {
         _ webView: WKWebView,
         didCommit navigation: WKNavigation?
     ) {
-        Task {
-            await syncCookiesToSharedHTTPCookieStorage(webView: webView)
+        Task.detached {
+            await self.syncCookiesToSharedHTTPCookieStorage(webView: webView)
         }
     }
     
